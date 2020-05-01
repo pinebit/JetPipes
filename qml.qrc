@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Lights.qml</file>
+        <file>WireframeEffect.qml</file>
+        <file>WireframeMaterial.qml</file>
+    </qresource>
+</RCC>
