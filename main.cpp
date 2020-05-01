@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     Qt3DExtras::Quick::Qt3DQuickWindow view;
+    view.resize(1280, 700);
 
     QSurfaceFormat format;
     format.setDepthBufferSize(32);

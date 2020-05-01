@@ -58,7 +58,7 @@ Entity {
                     id: tubeGeometry
                 }
             },
-            PhongMaterial {
+            WireframeMaterial {
             },
             Transform {
                 id: tubeTransform
