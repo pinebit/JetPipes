@@ -9,6 +9,7 @@ SOURCES += \
         Spline.cpp \
         TubeGenerator.cpp \
         TubeGeometry.cpp \
+        TubeModel.cpp \
         main.cpp
 
 RESOURCES += qml.qrc \
@@ -27,4 +28,5 @@ HEADERS += \
     RenderAttributes.hpp \
     Spline.hpp \
     TubeGenerator.hpp \
-    TubeGeometry.hpp
+    TubeGeometry.hpp \
+    TubeModel.hpp

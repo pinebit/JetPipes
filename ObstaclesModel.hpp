@@ -13,6 +13,8 @@ public:
     void clear();
     bool test(const QVector3D &vertex);
 
+    double radius() const;
+
 private:
     double _radius;
     double _gap;

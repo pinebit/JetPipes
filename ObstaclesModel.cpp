@@ -28,3 +28,8 @@ bool ObstaclesModel::test(const QVector3D &vertex)
 
     return true;
 }
+
+double ObstaclesModel::radius() const
+{
+    return _radius;
+}
