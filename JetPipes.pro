@@ -4,6 +4,7 @@ CONFIG += c++11
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+        ObstaclesModel.cpp \
         RenderAttributes.cpp \
         Spline.cpp \
         TubeGenerator.cpp \
@@ -22,6 +23,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    ObstaclesModel.hpp \
     RenderAttributes.hpp \
     Spline.hpp \
     TubeGenerator.hpp \
