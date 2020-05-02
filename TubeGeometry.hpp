@@ -5,15 +5,18 @@
 
 class TubeGeometry : public Qt3DRender::QGeometry
 {
-    Q_OBJECT
-
 public:
-    TubeGeometry(Qt3DCore::QNode *parent = nullptr);
-
     static const int CircleSegments = 16;
-    static constexpr double TubeRadius = 2.0;
 
-    void update(const QVector<QVector3D> &path);
+    static TubeGeometry* create(const QVector<QVector3D> &points,
+                                double radius,
+                                Qt3DCore::QNode *parent = nullptr);
+
+private:
+    TubeGeometry(const QVector<QVector3D> &vertices,
+                 const QVector<QVector3D> &normals,
+                 const QVector<quint32> &indices,
+                 Qt3DCore::QNode *parent = nullptr);
 };
 
 Q_DECLARE_METATYPE(TubeGeometry*)

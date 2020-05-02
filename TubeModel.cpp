@@ -1,32 +1,41 @@
 #include "TubeModel.hpp"
 #include "ObstaclesModel.hpp"
 #include <QRandomGenerator>
+#include <QDebug>
 
-TubeModel::TubeModel(int sceneRadius,
+TubeModel::TubeModel(const QVector<QVector3D> &points,
+                     int sceneRadius,
                      QSharedPointer<ObstaclesModel> obstaclesModel)
     : _sceneRadius(sceneRadius)
     , _obstaclesModel(obstaclesModel)
+    , _points(points)
+{
+}
+
+TubeModel* TubeModel::create(int sceneRadius,
+                             QSharedPointer<ObstaclesModel> obstaclesModel)
 {
     int attempts = MaxAttempts;
     while (attempts-- > 0) {
-        QVector3D candidate = randomVector(_sceneRadius);
-        if (_obstaclesModel->test(candidate)) {
-            _obstaclesModel->add(candidate);
-            _points.append(candidate);
-            break;
+        QVector3D candidate = randomVector(sceneRadius);
+        if (obstaclesModel->test(candidate)) {
+            obstaclesModel->add(candidate);
+            QVector<QVector3D> points = { candidate };
+            return new TubeModel(points, sceneRadius, obstaclesModel);
         }
     }
 
-    _finished = _points.isEmpty();
+    return nullptr;
+}
+
+QVector<QVector3D> TubeModel::points() const
+{
+    return _points;
 }
 
 bool TubeModel::advance()
 {
     if (_points.size() == MaxLength) {
-        _finished = true;
-    }
-
-    if (_finished) {
         return false;
     }
 
@@ -44,7 +53,7 @@ bool TubeModel::advance()
     return false;
 }
 
-QVector3D TubeModel::randomVector(int bound) const
+QVector3D TubeModel::randomVector(int bound)
 {
     auto gen = QRandomGenerator::global();
     const int x = gen->bounded(-bound, bound);

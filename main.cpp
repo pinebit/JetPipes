@@ -4,7 +4,7 @@
 #include <Qt3DQuickExtras/qt3dquickwindow.h>
 #include <QOpenGLContext>
 #include <TubeGeometry.hpp>
-#include <TubeGenerator.hpp>
+#include <Scene.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -20,8 +20,7 @@ int main(int argc, char *argv[])
     format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
-    qmlRegisterType<TubeGeometry>("JetPipes", 1, 0, "TubeGeometry");
-    qmlRegisterType<TubeGenerator>("JetPipes", 1, 0, "TubeGenerator");
+    qmlRegisterType<Scene>("JetPipes", 1, 0, "Scene");
 
     auto engine = view.engine()->qmlEngine();
     engine->addImportPath("qrc:/");

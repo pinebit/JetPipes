@@ -21,7 +21,34 @@ Entity {
         position: Qt.vector3d(100.0, 100.0, 100.0)
     }
 
+    Timer {
+        running: true
+        interval: 10
+        repeat: true
+        onTriggered: {
+            let q = mainCamera.rotation(0.1, Qt.vector3d(1, 1, 0))
+            mainCamera.rotateAboutViewCenter(q)
+        }
+    }
+
     Lights {
+    }
+
+    Scene {
+        id: scene
+
+        onUpdated: {
+            instantiator.model = tubesCount
+        }
+    }
+
+    Timer {
+        running: true
+        repeat: true
+        interval: 1000
+        onTriggered: {
+            scene.advance();
+        }
     }
 
     components: [
@@ -34,51 +61,19 @@ Entity {
         InputSettings { }
     ]
 
-    TubeGenerator {
-        id: generator
-    }
-
-    Timer {
-        running: true
-        repeat: true
-        interval: 1000
-        onTriggered: {
-            generator.next(tubeGeometry)
+    NodeInstantiator {
+        id: instantiator
+        active: true
+        model: 0
+        delegate: Entity {
+            components: [
+                GeometryRenderer {
+                    primitiveType: GeometryRenderer.Triangles
+                    geometry: scene.getTubeGeometry(index)
+                },
+                WireframeMaterial {
+                }
+            ]
         }
-    }
-
-    Entity {
-        id: root
-        property QtObject model
-
-        components: [
-            GeometryRenderer {
-                primitiveType: GeometryRenderer.Triangles
-                geometry: TubeGeometry {
-                    id: tubeGeometry
-                }
-            },
-            WireframeMaterial {
-            },
-            Transform {
-                id: tubeTransform
-                property real userAngle: 0.0
-                matrix: {
-                    let m = Qt.matrix4x4();
-                    m.rotate(userAngle, Qt.vector3d(0, 1, 0));
-                    return m;
-                }
-            }
-        ]
-    }
-
-    NumberAnimation {
-        target: tubeTransform
-        property: "userAngle"
-        duration: 100000
-        from: 0
-        to: 360
-        loops: Animation.Infinite
-        running: true
     }
 }

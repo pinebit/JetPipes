@@ -9,22 +9,28 @@ class ObstaclesModel;
 class TubeModel
 {
 public:
-    TubeModel(int sceneRadius,
-              QSharedPointer<ObstaclesModel> obstaclesModel);
     virtual ~TubeModel() {}
 
-    static const int MaxAttempts = 3;
+    static const int MaxAttempts = 10;
     static const int MaxLength = 100;
+
+    static TubeModel* create(int sceneRadius,
+                             QSharedPointer<ObstaclesModel> obstaclesModel);
+
+    QVector<QVector3D> points() const;
 
     bool advance();
 
 private:
-    QVector3D randomVector(int bound) const;
+    TubeModel(const QVector<QVector3D> &points,
+              int sceneRadius,
+              QSharedPointer<ObstaclesModel> obstaclesModel);
+
+    static QVector3D randomVector(int bound);
 
     int _sceneRadius;
     QSharedPointer<ObstaclesModel> _obstaclesModel;
     QVector<QVector3D> _points;
-    bool _finished { false };
 };
 
 #endif // TUBEMODEL_HPP

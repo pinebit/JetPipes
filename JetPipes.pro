@@ -6,8 +6,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         ObstaclesModel.cpp \
         RenderAttributes.cpp \
+        Scene.cpp \
         Spline.cpp \
-        TubeGenerator.cpp \
         TubeGeometry.cpp \
         TubeModel.cpp \
         main.cpp
@@ -26,7 +26,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ObstaclesModel.hpp \
     RenderAttributes.hpp \
+    Scene.hpp \
     Spline.hpp \
-    TubeGenerator.hpp \
     TubeGeometry.hpp \
     TubeModel.hpp

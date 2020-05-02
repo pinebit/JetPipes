@@ -58,18 +58,15 @@ QVector<QVector3D> buildCircleNormals(const QVector3D &dir)
 }
 }
 
-TubeGeometry::TubeGeometry(Qt3DCore::QNode *parent)
-    : Qt3DRender::QGeometry(parent)
-{
-}
-
-void TubeGeometry::update(const QVector<QVector3D> &path)
+TubeGeometry *TubeGeometry::create(const QVector<QVector3D> &points,
+                                   double radius,
+                                   Qt3DCore::QNode *parent)
 {
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;
     QVector<quint32> indices;
 
-    const QVector<QVector3D> interpolated = interpolatePath(path);
+    const QVector<QVector3D> interpolated = interpolatePath(points);
 
     QVector<QVector3D> prevNormals;
     for (int ii = 0; ii < interpolated.size(); ++ii) {
@@ -105,7 +102,7 @@ void TubeGeometry::update(const QVector<QVector3D> &path)
         const auto fixedNormals = startIndex == 0 ? circleNormals : (circleNormals.mid(startIndex) + circleNormals.mid(0, startIndex));
 
         for (auto n : fixedNormals) {
-            const auto v = current + n * TubeRadius;
+            const auto v = current + n * radius;
             vertices << v;
             normals << n;
         }
@@ -155,17 +152,24 @@ void TubeGeometry::update(const QVector<QVector3D> &path)
         }
     }
 
-    setBoundingVolumePositionAttribute(nullptr);
+    return new TubeGeometry(vertices, normals, indices, parent);
+}
 
-    for (auto attr : attributes()) {
-        removeAttribute(attr);
-    }
-
-    auto positionAttr = RenderAttributes::create(vertices, Qt3DRender::QAttribute::defaultPositionAttributeName(), this);
+TubeGeometry::TubeGeometry(const QVector<QVector3D> &vertices,
+                           const QVector<QVector3D> &normals,
+                           const QVector<quint32> &indices,
+                           Qt3DCore::QNode *parent)
+    : Qt3DRender::QGeometry(parent)
+{
+    auto positionAttr = RenderAttributes::create(vertices,
+                                                 Qt3DRender::QAttribute::defaultPositionAttributeName(),
+                                                 this);
     addAttribute(positionAttr);
     setBoundingVolumePositionAttribute(positionAttr);
 
-    auto normalAttr = RenderAttributes::create(normals, Qt3DRender::QAttribute::defaultNormalAttributeName(), this);
+    auto normalAttr = RenderAttributes::create(normals,
+                                               Qt3DRender::QAttribute::defaultNormalAttributeName(),
+                                               this);
     addAttribute(normalAttr);
 
     auto indexAttr = RenderAttributes::create(indices, this);
