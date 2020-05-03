@@ -1,8 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>shaders/robustwireframe.frag</file>
-        <file>shaders/robustwireframe.geom</file>
-        <file>shaders/robustwireframe.vert</file>
         <file>favicon.ico</file>
     </qresource>
 </RCC>

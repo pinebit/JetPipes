@@ -3,6 +3,7 @@
 #include "Config.hpp"
 #include <QRandomGenerator>
 #include <QDebug>
+#include <math.h>
 
 TubeModel::TubeModel(const QVector<QVector3D> &points,
                      QSharedPointer<ObstaclesModel> obstaclesModel)
@@ -15,7 +16,7 @@ TubeModel* TubeModel::create(QSharedPointer<ObstaclesModel> obstaclesModel)
 {
     int attempts = Config::MaxRandomAttempts;
     while (attempts-- > 0) {
-        QVector3D candidate = randomVector(Config::SceneRadius);
+        QVector3D candidate = randomVector(Config::SceneRadius / 3);
         if (obstaclesModel->test(candidate)) {
             obstaclesModel->add(candidate);
             QVector<QVector3D> points = { candidate };
@@ -39,8 +40,15 @@ bool TubeModel::advance()
 
     int attempts = Config::MaxRandomAttempts;
     while (attempts-- > 0) {
-        const auto direction = randomVector(100).normalized();
+        const auto lastDirection = _points[_points.size() - 1] - _points[_points.size() - 2];
+        const auto direction = (lastDirection.normalized() + randomVector(100).normalized() / 2.0).normalized();
         const auto candidate = _points.last() + direction * (Config::TubeRadius * 2.0 + Config::TubesGap);
+        if (abs(candidate.x()) > Config::SceneRadius &&
+            abs(candidate.y()) > Config::SceneRadius &&
+            abs(candidate.z()) > Config::SceneRadius) {
+            return false;
+        }
+
         if (_obstaclesModel->test(candidate)) {
             _obstaclesModel->add(candidate);
             _points.append(candidate);

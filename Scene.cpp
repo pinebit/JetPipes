@@ -53,13 +53,13 @@ bool Scene::advance()
 
 void Scene::clear()
 {
-    qDebug() << Q_FUNC_INFO;
-
     while (!_tubes.isEmpty()) {
         delete _tubes.takeLast();
     }
 
     _geometries.clear();
+
+    _obstaclesModel->clear();
 }
 
 TubeGeometry *Scene::getTubeGeometry(int index) const
