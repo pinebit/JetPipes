@@ -21,6 +21,7 @@ Press ESC key to close the app. Space key to toggle fullscreen/windowed mode.
 The application uses Qt3D module: https://doc.qt.io/qt-5/qt3d-index.html for visualization.
 Each tube is defined by set of 3D points which then interpolated using Centripetal Catmull–Rom splines: 
 https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline
+
 After the final tube's path is estimated, the guided extrusion math is applied to generate the tube's mesh.
 The current implementation is not very optimal in terms of performace, as it keeps regenerating all splines,
 even for the immutable parts.
