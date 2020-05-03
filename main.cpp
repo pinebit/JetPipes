@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     engine->rootContext()->setContextProperty("_window", &view);
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();
+    view.setVisibility(QWindow::FullScreen);
 
     return app.exec();
 }

@@ -72,6 +72,26 @@ Entity {
         InputSettings { }
     ]
 
+    KeyboardDevice {
+        id: keyboardDevice
+    }
+
+    KeyboardHandler {
+        id: keyboardHandler
+        focus: true
+        sourceDevice: keyboardDevice
+        onEscapePressed: {
+            _window.close()
+        }
+        onSpacePressed: {
+            if (_window.visibility === Window.FullScreen) {
+                _window.visibility = Window.Maximized
+            } else {
+                _window.visibility = Window.FullScreen
+            }
+        }
+    }
+
     NodeInstantiator {
         id: instantiator
         active: true
@@ -83,7 +103,7 @@ Entity {
                     geometry: scene.getTubeGeometry(index)
                 },
                 PhongMaterial {
-                    property color c: sceneRoot.colors[index]
+                    property color c: sceneRoot.colors[index % sceneRoot.colors.length]
                     diffuse: c
                 }
 
