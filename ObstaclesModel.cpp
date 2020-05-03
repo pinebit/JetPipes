@@ -1,10 +1,5 @@
 #include "ObstaclesModel.hpp"
-
-ObstaclesModel::ObstaclesModel(double radius, double gap)
-    : _radius(radius)
-    , _gap(gap)
-{
-}
+#include "Config.hpp"
 
 void ObstaclesModel::add(const QVector3D &vertex)
 {
@@ -18,7 +13,7 @@ void ObstaclesModel::clear()
 
 bool ObstaclesModel::test(const QVector3D &vertex)
 {
-    const auto limit = _radius * 2.0 + _gap;
+    const auto limit = Config::TubeRadius * 2.0 + Config::TubesGap;
 
     for (const auto &o : _obstacles) {
         if (limit > o.distanceToPoint(vertex)) {
@@ -27,9 +22,4 @@ bool ObstaclesModel::test(const QVector3D &vertex)
     }
 
     return true;
-}
-
-double ObstaclesModel::radius() const
-{
-    return _radius;
 }

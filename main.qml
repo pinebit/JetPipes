@@ -2,12 +2,18 @@ import QtQuick 2.2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.0
+import Qt3D.Extras 2.12
 
 import JetPipes 1.0
 
 Entity {
     id: sceneRoot
+    property var colors: [
+        "#001f3f", "#0074D9", "#7FDBFF", "#39CCCC",
+        "#3D9970", "#2ECC40", "#01FF70", "#FFDC00",
+        "#FF851B", "#FF4136", "#85144b", "#F012BE",
+        "#B10DC9", "#AAAAAA", "#DDDDDD", "#FFFFFF"
+    ]
 
     Camera {
         id: mainCamera
@@ -18,15 +24,15 @@ Entity {
         farPlane: 500.0
         viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
         upVector: Qt.vector3d(0.0, 1.0, 0.0)
-        position: Qt.vector3d(100.0, 100.0, 100.0)
+        position: Qt.vector3d(150.0, 150.0, 150.0)
     }
 
     Timer {
         running: true
-        interval: 10
+        interval: 1
         repeat: true
         onTriggered: {
-            let q = mainCamera.rotation(0.1, Qt.vector3d(1, 1, 0))
+            let q = mainCamera.rotation(0.05, Qt.vector3d(0, 1, 0))
             mainCamera.rotateAboutViewCenter(q)
         }
     }
@@ -37,17 +43,22 @@ Entity {
     Scene {
         id: scene
 
-        onUpdated: {
-            instantiator.model = tubesCount
+        Component.onCompleted: {
+            scene.init();
+            updateTimer.start()
         }
     }
 
     Timer {
-        running: true
-        repeat: true
-        interval: 1000
+        id: updateTimer
+        repeat: false
+        interval: 50
         onTriggered: {
-            scene.advance();
+            if (!scene.advance()) {
+                scene.clear();
+                scene.init();
+            }
+            updateTimer.start()
         }
     }
 
@@ -64,15 +75,18 @@ Entity {
     NodeInstantiator {
         id: instantiator
         active: true
-        model: 0
+        model: scene.tubesCount
         delegate: Entity {
             components: [
                 GeometryRenderer {
                     primitiveType: GeometryRenderer.Triangles
                     geometry: scene.getTubeGeometry(index)
                 },
-                WireframeMaterial {
+                PhongMaterial {
+                    property color c: sceneRoot.colors[index]
+                    diffuse: c
                 }
+
             ]
         }
     }

@@ -10,26 +10,22 @@ class Scene : public QObject
 {
     Q_OBJECT
 
-public:
-    explicit Scene(QObject *parent = nullptr);
+    Q_PROPERTY(int tubesCount READ tubesCount CONSTANT)
 
-    static const int MinTubes = 3;
-    static const int MaxTubes = 30;
-    static const int SceneRadius = 100;
-    static const int TubeRadius = 2;
-    static const int TubesGap = 0;
+public:
+    Scene(QObject *parent = nullptr);
+
+    int tubesCount() const;
 
 public slots:
+    void init();
     bool advance();
     void clear();
     TubeGeometry* getTubeGeometry(int index) const;
 
-signals:
-    void updated(int tubesCount);
-
 private:
-    QList<TubeModel*> _tubes;
-    QList<TubeGeometry*> _geometries;
+    QVector<TubeModel*> _tubes;
+    QVector<TubeGeometry*> _geometries;
     QSharedPointer<ObstaclesModel> _obstaclesModel;
 };
 

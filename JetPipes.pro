@@ -24,6 +24,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    Config.hpp \
     ObstaclesModel.hpp \
     RenderAttributes.hpp \
     Scene.hpp \

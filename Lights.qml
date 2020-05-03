@@ -10,7 +10,7 @@ Entity {
             DirectionalLight {
                 worldDirection: Qt.vector3d(1.0, 1.0, 1.0).normalized()
                 color: "white"
-                intensity: 0.8
+                intensity: 1
             }
         ]
     }
@@ -19,7 +19,7 @@ Entity {
             DirectionalLight {
                 worldDirection: Qt.vector3d(-1, -1, -1).normalized()
                 color: "white"
-                intensity: 0.8
+                intensity: 1
             }
         ]
     }

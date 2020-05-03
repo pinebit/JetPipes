@@ -7,17 +7,11 @@
 class ObstaclesModel
 {
 public:
-    ObstaclesModel(double radius, double gap);
-
     void add(const QVector3D &vertex);
     void clear();
     bool test(const QVector3D &vertex);
 
-    double radius() const;
-
 private:
-    double _radius;
-    double _gap;
     QVector<QVector3D> _obstacles;
 };
 

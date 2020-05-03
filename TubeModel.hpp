@@ -11,11 +11,7 @@ class TubeModel
 public:
     virtual ~TubeModel() {}
 
-    static const int MaxAttempts = 10;
-    static const int MaxLength = 100;
-
-    static TubeModel* create(int sceneRadius,
-                             QSharedPointer<ObstaclesModel> obstaclesModel);
+    static TubeModel* create(QSharedPointer<ObstaclesModel> obstaclesModel);
 
     QVector<QVector3D> points() const;
 
@@ -23,12 +19,10 @@ public:
 
 private:
     TubeModel(const QVector<QVector3D> &points,
-              int sceneRadius,
               QSharedPointer<ObstaclesModel> obstaclesModel);
 
     static QVector3D randomVector(int bound);
 
-    int _sceneRadius;
     QSharedPointer<ObstaclesModel> _obstaclesModel;
     QVector<QVector3D> _points;
 };

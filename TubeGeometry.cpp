@@ -1,6 +1,7 @@
 #include "TubeGeometry.hpp"
-#include <RenderAttributes.hpp>
-#include <Spline.hpp>
+#include "RenderAttributes.hpp"
+#include "Spline.hpp"
+#include "Config.hpp"
 #include <QMatrix4x4>
 
 using namespace SplineLib;
@@ -46,8 +47,8 @@ QVector<QVector3D> buildCircleNormals(const QVector3D &dir)
     const auto cv = getOrthogonalVector(dir).normalized();
     QMatrix4x4 rot;
 
-    for (int cs = 0; cs < TubeGeometry::CircleSegments; ++cs) {
-        double angle = cs * 360.0 / TubeGeometry::CircleSegments;
+    for (int cs = 0; cs < Config::TubeSegments; ++cs) {
+        double angle = cs * 360.0 / Config::TubeSegments;
         rot.setToIdentity();
         rot.rotate(angle, dir);
         const auto normal = rot * cv;
@@ -58,9 +59,12 @@ QVector<QVector3D> buildCircleNormals(const QVector3D &dir)
 }
 }
 
-TubeGeometry *TubeGeometry::create(const QVector<QVector3D> &points,
-                                   double radius,
-                                   Qt3DCore::QNode *parent)
+TubeGeometry::TubeGeometry(Qt3DCore::QNode *parent)
+    : Qt3DRender::QGeometry(parent)
+{
+}
+
+void TubeGeometry::update(const QVector<QVector3D> &points)
 {
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;
@@ -102,7 +106,7 @@ TubeGeometry *TubeGeometry::create(const QVector<QVector3D> &points,
         const auto fixedNormals = startIndex == 0 ? circleNormals : (circleNormals.mid(startIndex) + circleNormals.mid(0, startIndex));
 
         for (auto n : fixedNormals) {
-            const auto v = current + n * radius;
+            const auto v = current + n * Config::TubeRadius;
             vertices << v;
             normals << n;
         }
@@ -110,26 +114,24 @@ TubeGeometry *TubeGeometry::create(const QVector<QVector3D> &points,
         prevNormals = fixedNormals;
     }
 
-    const int lii = interpolated.size() - 1;
-    auto firstNormal = (interpolated[0] - interpolated[1]).normalized();
-    auto lastNormal = (interpolated[lii - 1] - interpolated[lii]).normalized();
-    for (int i = 0; i < CircleSegments; ++i) {
+    const QVector3D zeroNormal(0, 0, 0);
+    for (int i = 0; i < Config::TubeSegments; ++i) {
         vertices.prepend(interpolated.first());
-        normals.prepend(firstNormal);
+        normals.prepend(zeroNormal);
         vertices.append(interpolated.last());
-        normals.append(lastNormal);
+        normals.append(zeroNormal);
     }
 
     const quint32 maxVertexIndex = vertices.size() - 1;
     for (int ci = 0; ci <= interpolated.size(); ++ci) {
-        for (int si = 0; si < CircleSegments; ++si) {
-            int p0Index = ci * CircleSegments + si;
+        for (int si = 0; si < Config::TubeSegments; ++si) {
+            int p0Index = ci * Config::TubeSegments + si;
             int p1Index = p0Index + 1;
-            int p2Index = p0Index + CircleSegments;
+            int p2Index = p0Index + Config::TubeSegments;
             int p3Index = p2Index + 1;
-            if (si == CircleSegments - 1) {
-                p1Index -= CircleSegments;
-                p3Index -= CircleSegments;
+            if (si == Config::TubeSegments - 1) {
+                p1Index -= Config::TubeSegments;
+                p3Index -= Config::TubeSegments;
             }
 
             quint32 vertexIndex1 = p0Index;
@@ -152,15 +154,18 @@ TubeGeometry *TubeGeometry::create(const QVector<QVector3D> &points,
         }
     }
 
-    return new TubeGeometry(vertices, normals, indices, parent);
+    updateGeometry(vertices, normals, indices);
 }
 
-TubeGeometry::TubeGeometry(const QVector<QVector3D> &vertices,
-                           const QVector<QVector3D> &normals,
-                           const QVector<quint32> &indices,
-                           Qt3DCore::QNode *parent)
-    : Qt3DRender::QGeometry(parent)
+void TubeGeometry::updateGeometry(const QVector<QVector3D> &vertices,
+                                  const QVector<QVector3D> &normals,
+                                  const QVector<quint32> &indices)
 {
+    for (auto attr : attributes()) {
+        removeAttribute(attr);
+        attr->deleteLater();
+    }
+
     auto positionAttr = RenderAttributes::create(vertices,
                                                  Qt3DRender::QAttribute::defaultPositionAttributeName(),
                                                  this);

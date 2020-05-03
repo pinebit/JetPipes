@@ -1,44 +1,54 @@
 #include "Scene.hpp"
+#include "Config.hpp"
 #include <QDebug>
 
 Scene::Scene(QObject *parent)
     : QObject(parent)
 {
-    qRegisterMetaType<QList<TubeGeometry*>>("QList<TubeGeometry*>");
-    _obstaclesModel = QSharedPointer<ObstaclesModel>::create(TubeRadius, TubesGap);
+    qRegisterMetaType<TubeGeometry*>("TubeGeometry*");
+    _obstaclesModel = QSharedPointer<ObstaclesModel>::create();
+
+    for (int i = 0; i < Config::TubesCount; ++i) {
+        _geometries << new TubeGeometry();
+    }
+}
+
+int Scene::tubesCount() const
+{
+    return Config::TubesCount;
+}
+
+void Scene::init()
+{
+    while (_tubes.size() < Config::TubesCount) {
+        auto tube = TubeModel::create(_obstaclesModel);
+        if (tube) {
+            if (!tube->advance()) {
+                delete tube;
+                continue;
+            }
+
+            _tubes << tube;
+        }
+    }
+
+    for (int i = 0; i < Config::TubesCount; ++i) {
+        _geometries[i]->update(_tubes[i]->points());
+    }
 }
 
 bool Scene::advance()
 {
-    qDebug() << Q_FUNC_INFO << _tubes.size();
-
-    if (_tubes.size() >= MaxTubes) {
-        return false;
-    }
-
-    while (_tubes.size() < MinTubes) {
-        auto tube = TubeModel::create(SceneRadius, _obstaclesModel);
-        if (!tube || !tube->advance()) {
-            return false;
-        }
-        _tubes << tube;
-        _geometries << TubeGeometry::create(tube->points(), TubeRadius);
-    }
-
-    bool ok = false;
-    int index = 0;
-    for (auto tube : _tubes) {
-        if (tube->advance()) {
-            _geometries[index] = TubeGeometry::create(tube->points(), TubeRadius);
-            ok = true;
+    int stuckCount = 0;
+    for (int i = 0; i < _tubes.size(); ++i) {
+        if (_tubes[i]->advance()) {
+            _geometries[i]->update(_tubes[i]->points());
         } else {
-            qDebug() << "could not advance tube" << index;
+            stuckCount++;
         }
-        index++;
     }
 
-    emit updated(_geometries.size());
-    return ok;
+    return stuckCount < Config::TubesCount / 2;
 }
 
 void Scene::clear()
@@ -50,8 +60,6 @@ void Scene::clear()
     }
 
     _geometries.clear();
-
-    emit updated(0);
 }
 
 TubeGeometry *Scene::getTubeGeometry(int index) const
