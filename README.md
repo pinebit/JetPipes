@@ -2,6 +2,8 @@
 
 Yet another "pipes screensaver" powered by Qt3D.
 
+![screenshot](screenshot.png)
+
 ## Rules
 
 The default configuration defines 32 tubes randomly growing in a sphere of R=100 units.
