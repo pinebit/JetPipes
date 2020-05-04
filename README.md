@@ -2,6 +2,8 @@
 
 Yet another "pipes screensaver" powered by Qt3D.
 
+Watch the live demo: https://www.youtube.com/watch?v=uZ8aALwel68
+
 ![screenshot](screenshot.png)
 
 ## Rules
