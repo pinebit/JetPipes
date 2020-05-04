@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>Lights.qml</file>
+        <file>SceneLightsEntity.qml</file>
+        <file>SceneCamera.qml</file>
+        <file>PipesInstantiator.qml</file>
+        <file>CameraAnimator.qml</file>
     </qresource>
 </RCC>

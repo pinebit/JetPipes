@@ -29,7 +29,7 @@ QVector<QVector3D> interpolatePath(const QVector<QVector3D> &path)
 
     QVector<QVector3D> interpolated;
     for (int i = 0; i < numSplines; ++i) {
-        const int split = static_cast<int>(Length(splines[i]));
+        const int split = static_cast<int>(Length(splines[i])) * 2;
         for (int k = 0; k < split; ++k) {
             const double u = (double)k / split;
             const auto v3 = Position(splines[i], u);

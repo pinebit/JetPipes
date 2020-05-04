@@ -60,6 +60,8 @@ void Scene::clear()
     _geometries.clear();
 
     _obstaclesModel->clear();
+
+    emit cleared();
 }
 
 TubeGeometry *Scene::getTubeGeometry(int index) const

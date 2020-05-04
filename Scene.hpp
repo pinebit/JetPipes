@@ -23,6 +23,9 @@ public slots:
     void clear();
     TubeGeometry* getTubeGeometry(int index) const;
 
+signals:
+    void cleared();
+
 private:
     QVector<TubeModel*> _tubes;
     QVector<TubeGeometry*> _geometries;
