@@ -14,6 +14,7 @@ Entity {
     }
 
     CameraAnimator {
+        id: cameraAnimator
         camera: mainCamera
     }
 
@@ -29,7 +30,7 @@ Entity {
         }
 
         onCleared: {
-            mainCamera.position = Qt.vector3d(150, 150, 150)
+            cameraAnimator.reset()
         }
     }
 

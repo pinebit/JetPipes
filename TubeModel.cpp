@@ -16,7 +16,7 @@ TubeModel* TubeModel::create(QSharedPointer<ObstaclesModel> obstaclesModel)
 {
     int attempts = Config::MaxRandomAttempts;
     while (attempts-- > 0) {
-        QVector3D candidate = randomVector(Config::SceneRadius / 3);
+        QVector3D candidate = randomVector(Config::SceneRadius / 5);
         if (obstaclesModel->test(candidate)) {
             obstaclesModel->add(candidate);
             QVector<QVector3D> points = { candidate };
@@ -40,7 +40,10 @@ bool TubeModel::advance()
 
     int attempts = Config::MaxRandomAttempts;
     while (attempts-- > 0) {
-        const auto lastDirection = _points[_points.size() - 1] - _points[_points.size() - 2];
+        auto lastDirection = _points.last();
+        if (_points.size() > 1) {
+            lastDirection = lastDirection - _points[_points.size() - 2];
+        }
         const auto direction = (lastDirection.normalized() + randomVector(100).normalized() / 2.0).normalized();
         const auto candidate = _points.last() + direction * (Config::TubeRadius * 2.0 + Config::TubesGap);
         if (abs(candidate.x()) > Config::SceneRadius &&

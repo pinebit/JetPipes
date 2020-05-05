@@ -5,30 +5,33 @@ import Qt3D.Render 2.0
 Timer {
     id: root
     property Camera camera
-    property var _lastVector: Qt.vector3d(0, 0, 0)
-    property int _frames: 0
+    property real sceneRadius: 150.0
+    property real rotationPeriodMs: 30000.0
+    property var _lastDate: Date.now()
+    property var _elapsed: 0
+
+    function reset() {
+        _lastDate = Date.now()
+        _elapsed = 0
+    }
 
     running: true
     interval: 1
     repeat: true
     onTriggered: {
-        _frames = _frames + 1
+        let newDate = Date.now()
+        _elapsed += newDate - _lastDate
 
-        let q = camera.rotation(Math.random() / 10.0, Qt.vector3d(0, 1, 0))
-        camera.rotateAboutViewCenter(q)
+        let pa = _elapsed * 2.0 * Math.PI / rotationPeriodMs
+        let px = sceneRadius * Math.cos(pa)
+        let py = sceneRadius + 5 * Math.cos(pa * 8.0)
+        let pz = sceneRadius * Math.sin(pa)
+        camera.position = Qt.vector3d(px, py, pz)
 
-        if (_frames % 10 === 0) {
-            _lastVector = randomVector()
+        _lastDate = newDate
+        if (_elapsed > rotationPeriodMs) {
+            _elapsed -= rotationPeriodMs
         }
-
-        camera.position = camera.position.plus(_lastVector)
-    }
-
-    function randomVector() {
-        let x = Math.random() - 0.5
-        let y = Math.random() - 0.5
-        let z = Math.random() - 0.5
-        return Qt.vector3d(x, y, z).times(0.1)
     }
 }
 
