@@ -1,9 +1,9 @@
 #ifndef TUBEGEOMETRY_HPP
 #define TUBEGEOMETRY_HPP
 
-#include <Qt3DRender/QGeometry>
+#include <Qt3DCore/QGeometry>
 
-class TubeGeometry : public Qt3DRender::QGeometry
+class TubeGeometry : public Qt3DCore::QGeometry
 {
 public:
     TubeGeometry(Qt3DCore::QNode *parent = nullptr);

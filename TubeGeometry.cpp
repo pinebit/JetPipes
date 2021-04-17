@@ -60,7 +60,7 @@ QVector<QVector3D> buildCircleNormals(const QVector3D &dir)
 }
 
 TubeGeometry::TubeGeometry(Qt3DCore::QNode *parent)
-    : Qt3DRender::QGeometry(parent)
+    : Qt3DCore::QGeometry(parent)
 {
 }
 
@@ -167,13 +167,13 @@ void TubeGeometry::updateGeometry(const QVector<QVector3D> &vertices,
     }
 
     auto positionAttr = RenderAttributes::create(vertices,
-                                                 Qt3DRender::QAttribute::defaultPositionAttributeName(),
+                                                 Qt3DCore::QAttribute::defaultPositionAttributeName(),
                                                  this);
     addAttribute(positionAttr);
     setBoundingVolumePositionAttribute(positionAttr);
 
     auto normalAttr = RenderAttributes::create(normals,
-                                               Qt3DRender::QAttribute::defaultNormalAttributeName(),
+                                               Qt3DCore::QAttribute::defaultNormalAttributeName(),
                                                this);
     addAttribute(normalAttr);
 

@@ -1,4 +1,4 @@
-QT += 3dcore 3drender 3dinput 3dquick 3dlogic qml quick 3dquickextras
+QT += qml quick 3dcore 3drender 3dinput 3dquick 3dquickextras
 CONFIG += c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
